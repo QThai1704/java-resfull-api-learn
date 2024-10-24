@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import jakarta.servlet.http.HttpServletResponse;
 import vn.hoidanit.jobhunter.domain.RestResponse;
 
+
+// Chú ý: Cách hoạt động của FormatRestResponse chưa được hiểu rõ
 @ControllerAdvice
 public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
@@ -45,7 +47,7 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
             res.setData(body);
             res.setMessage("Call API success");
         }
-        return body;
+        return res;
     }
 
 }

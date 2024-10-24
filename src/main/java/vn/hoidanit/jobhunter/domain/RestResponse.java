@@ -2,7 +2,7 @@ package vn.hoidanit.jobhunter.domain;
 
 public class RestResponse<T> {
     private String error;
-    private String message;
+    private Object message;
     private T data;
     private int statusCode;
 
@@ -18,7 +18,7 @@ public class RestResponse<T> {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Object message) {
         this.message = message;
     }
 
@@ -35,16 +35,6 @@ public class RestResponse<T> {
     }
 
     public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public RestResponse() {
-    }
-
-    public RestResponse(String error, String message, T data, int statusCode) {
-        this.error = error;
-        this.message = message;
-        this.data = data;
         this.statusCode = statusCode;
     }
 }

@@ -24,6 +24,15 @@ public class UserService {
         return null;
     }
 
+    public User findUserByEmail(String email) {
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user.get();
+        }
+        return null;
+    }
+
+
     public List<User> fetchAllUser() {
         return this.userRepository.findAll();
     }
