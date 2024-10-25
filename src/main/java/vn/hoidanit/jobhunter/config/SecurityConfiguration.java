@@ -33,10 +33,11 @@ public class SecurityConfiguration {
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .formLogin(f -> f.disable())
-                .exceptionHandling(
-                        exceptions -> exceptions
-                                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // Lỗi 401
-                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // Lỗi 403
+                // .exceptionHandling(
+                // exceptions -> exceptions
+                // .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) // Lỗi
+                // 401
+                // .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // Lỗi 403
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
