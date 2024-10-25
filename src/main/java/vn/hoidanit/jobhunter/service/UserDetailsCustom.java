@@ -25,9 +25,10 @@ public class UserDetailsCustom implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         vn.hoidanit.jobhunter.domain.User userByEmail = null;
         Optional<vn.hoidanit.jobhunter.domain.User> user = this.userRepository.findByEmail(username);
-        if (user.isPresent()) {
-            userByEmail = user.get();
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException("Tài khoản/ mật khẩu không hợp lệ!");
         }
+        userByEmail = user.get();
         return new User(
                 userByEmail.getEmail(),
                 userByEmail.getPassword(),
