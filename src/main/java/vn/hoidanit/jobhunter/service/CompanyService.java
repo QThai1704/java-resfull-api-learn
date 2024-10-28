@@ -1,13 +1,13 @@
 package vn.hoidanit.jobhunter.service;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import jakarta.persistence.PreUpdate;
 import vn.hoidanit.jobhunter.domain.Company;
+import vn.hoidanit.jobhunter.domain.dto.Meta;
+import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.CompanyRepository;
 
 @Service
@@ -22,11 +22,20 @@ public class CompanyService {
     // POST
     public Company createCompany(Company newCompany) {
         return this.companyRepository.save(newCompany);
-    }
+    } 
 
     // GET
-    public List<Company> getAllCompany() {
-        return this.companyRepository.findAll();
+    public ResultPaginationDTO getAllCompany(Pageable pageable) {
+        Page<Company> pageCompany = this.companyRepository.findAll(pageable);
+        ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
+        Meta meta = new Meta();
+        meta.setPage(pageCompany.getNumber());
+        meta.setPageSize(pageCompany.getSize());
+        meta.setPages(pageCompany.getTotalPages());
+        meta.setTotal(pageCompany.getTotalElements());
+        resultPaginationDTO.setMeta(meta);
+        resultPaginationDTO.setResult(pageCompany.getContent());
+        return resultPaginationDTO;
     }
 
     public Company getCompanyById(long id) {
@@ -50,8 +59,9 @@ public class CompanyService {
             currentCompany.setCreatedBy(updateCompany.getCreatedBy());
             currentCompany.setUpdatedBy(updateCompany.getUpdatedBy());
             this.companyRepository.save(currentCompany);
+            return currentCompany;
         }
-        return currentCompany;
+        return null;
     }
 
     // DELETE
