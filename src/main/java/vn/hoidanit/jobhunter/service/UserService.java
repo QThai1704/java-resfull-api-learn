@@ -32,7 +32,6 @@ public class UserService {
         return null;
     }
 
-
     public List<User> fetchAllUser() {
         return this.userRepository.findAll();
     }
