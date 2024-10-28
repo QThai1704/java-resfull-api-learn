@@ -10,7 +10,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import jakarta.servlet.http.HttpServletResponse;
 import vn.hoidanit.jobhunter.domain.RestResponse;
-
+import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 
 // Chú ý: Cách hoạt động của FormatRestResponse chưa được hiểu rõ
 @ControllerAdvice
@@ -45,7 +45,8 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
             return body;
         } else {
             res.setData(body);
-            res.setMessage("Call API success");
+            ApiMessage apiMessage = returnType.getMethodAnnotation(ApiMessage.class);
+            res.setMessage(apiMessage != null ? apiMessage.value() : "Call API Success");
         }
         return res;
     }
