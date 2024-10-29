@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import vn.hoidanit.jobhunter.domain.RestResponse;
 
@@ -35,7 +36,6 @@ public class GlobalException {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> validationErorr(
             MethodArgumentNotValidException ex) {
-
         BindingResult result = ex.getBindingResult();
         final List<FieldError> fieldErrors = result.getFieldErrors();
 
@@ -47,4 +47,12 @@ public class GlobalException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleUrlException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setMessage("Không tìm thấy đường dẫn");
+        res.setError(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
 }
