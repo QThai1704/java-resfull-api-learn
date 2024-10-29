@@ -12,4 +12,8 @@ import vn.hoidanit.jobhunter.domain.User;
 public interface UserRepository extends JpaRepository<User, Long>,
         JpaSpecificationExecutor<User> {
     Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    boolean existsById(long id);
 }
