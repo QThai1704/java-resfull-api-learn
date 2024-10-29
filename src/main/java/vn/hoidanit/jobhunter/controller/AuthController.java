@@ -24,61 +24,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api/v1")
 public class AuthController {
 
-    @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
-    private long jwtRefreshExpiration;
+        @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
+        private long jwtRefreshExpiration;
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+        private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    private final SecurityUtil securityUtil;
+        private final SecurityUtil securityUtil;
 
-    private final UserService userService;
+        private final UserService userService;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder,
-            SecurityUtil securityUtil, UserService userService) {
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.securityUtil = securityUtil;
-        this.userService = userService;
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
-        // B1: Đưa cho Security thông tin của người dùng nhập vào form login
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDto.getUsername(), loginDto.getPassword());
-
-        // B2: Xác thực thông tin người dùng
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        // Tạo Access token
-        String accessToken = securityUtil.createAccessToken(authentication);
-        //
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        ResLoginDTO res = new ResLoginDTO();
-        User user = this.userService.findUserByEmail(loginDto.getUsername());
-        if (user != null) {
-            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
-                    user.getId(),
-                    user.getName(),
-                    user.getEmail());
-            res.setUser(userLogin);
+        public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder,
+                        SecurityUtil securityUtil, UserService userService) {
+                this.authenticationManagerBuilder = authenticationManagerBuilder;
+                this.securityUtil = securityUtil;
+                this.userService = userService;
         }
-        res.setAccessToken(accessToken);
 
-        // Tạo refresh token
-        String refreshToken = securityUtil.createRefreshToken(loginDto.getUsername(), res);
-        this.userService.updateRefreshToken(loginDto.getUsername(), refreshToken);
+        @PostMapping("/login")
+        public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
+                // B1: Đưa cho Security thông tin của người dùng nhập vào form login
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                                loginDto.getUsername(), loginDto.getPassword());
 
-        // Tạo cookie
-        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true) // chỉ có tác dụng cho http hoặc https, trong trường hợp này không có tác dụng
-                .maxAge(jwtRefreshExpiration)
-                .path("/")
-                .build();
-        return ResponseEntity
-                .ok()
-                .header("Set-Cookie", responseCookie.toString())
-                .body(res);
-    }
+                // B2: Xác thực thông tin người dùng
+                Authentication authentication = authenticationManagerBuilder.getObject()
+                                .authenticate(authenticationToken);
+
+                // Tạo access token
+                String accessToken = securityUtil.createAccessToken(authentication);
+                // B3: Lưu các thông tin và SecurityContextHolder
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                // Khởi tạo đối tượng ResLoginDTO
+                ResLoginDTO res = new ResLoginDTO();
+                User user = this.userService.findUserByEmail(loginDto.getUsername());
+                if (user != null) {
+                        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
+                                        user.getId(),
+                                        user.getName(),
+                                        user.getEmail());
+                        res.setUser(userLogin);
+                }
+                res.setAccessToken(accessToken);
+
+                // Tạo refresh token
+                String refreshToken = securityUtil.createRefreshToken(loginDto.getUsername(), res);
+                this.userService.updateRefreshToken(loginDto.getUsername(), refreshToken);
+
+                // Tạo cookie để lưu lại token
+                ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
+                                .httpOnly(true)
+                                .secure(true) // chỉ có tác dụng cho http hoặc https, trong trường hợp này không có tác
+                                              // dụng
+                                .maxAge(jwtRefreshExpiration)
+                                .path("/")
+                                .build();
+
+                return ResponseEntity
+                                .ok()
+                                .header("Set-Cookie", responseCookie.toString())
+                                .body(res);
+        }
 }

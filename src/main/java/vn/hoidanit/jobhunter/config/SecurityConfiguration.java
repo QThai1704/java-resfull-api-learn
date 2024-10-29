@@ -18,6 +18,7 @@ public class SecurityConfiguration {
                 return new BCryptPasswordEncoder();
         }
 
+        // Phân quyền
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http,
                         CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {

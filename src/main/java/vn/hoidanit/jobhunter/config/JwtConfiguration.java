@@ -25,16 +25,19 @@ public class JwtConfiguration {
     @Value("${hoidanit.jwt.base64-secret}")
     private String jwtToken;
 
+    // 
     private SecretKey getSecretKey() {
         byte[] keyBytes = Base64.from(jwtToken).decode();
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtil.JWT_ALGORITHM.getName());
     }
 
+    // Mã hóa token
     @Bean
     public JwtEncoder jwtEncoder() {
         return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
     }
 
+    // Giải mã token
     @Bean
     public JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
@@ -49,6 +52,7 @@ public class JwtConfiguration {
         };
     }
 
+    // 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
