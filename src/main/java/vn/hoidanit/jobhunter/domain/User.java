@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -25,15 +26,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private long id;
-    @NotBlank(message = "Không được để trống tên")
     private String name;
     @NotBlank(message = "Không được để trống trường email")
     private String email;
+    @NotBlank(message = "Không được để trống trường password")
     private String password;
     private int age;
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
     private String address;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
     private Instant createAt;
     private Instant updateAt;

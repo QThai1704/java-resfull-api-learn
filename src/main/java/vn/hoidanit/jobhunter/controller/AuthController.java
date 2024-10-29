@@ -9,6 +9,8 @@ import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RestController
 @RequestMapping("/api/v1")
 public class AuthController {
+
+    @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
+    private long jwtRefreshExpiration;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -60,8 +65,20 @@ public class AuthController {
         }
         res.setAccessToken(accessToken);
 
-        // Tạo Access token
+        // Tạo refresh token
         String refreshToken = securityUtil.createRefreshToken(loginDto.getUsername(), res);
-        return ResponseEntity.ok().body(res);
+        this.userService.updateRefreshToken(loginDto.getUsername(), refreshToken);
+
+        // Tạo cookie
+        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(true) // chỉ có tác dụng cho http hoặc https, trong trường hợp này không có tác dụng
+                .maxAge(jwtRefreshExpiration)
+                .path("/")
+                .build();
+        return ResponseEntity
+                .ok()
+                .header("Set-Cookie", responseCookie.toString())
+                .body(res);
     }
 }

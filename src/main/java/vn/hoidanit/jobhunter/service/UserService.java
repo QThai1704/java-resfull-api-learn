@@ -94,6 +94,15 @@ public class UserService {
         return currentUser;
     }
 
+    public User updateRefreshToken(String email, String refreshToken) {
+        User user = this.findUserByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        user.setRefreshToken(refreshToken);
+        return this.userRepository.save(user);
+    }
+
     // DELETE
     public void delete(long id) throws IdInvalidException {
         this.userRepository.deleteById(id);
