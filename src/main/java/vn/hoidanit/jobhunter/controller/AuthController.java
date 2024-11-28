@@ -4,10 +4,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.LoginDTO;
+import vn.hoidanit.jobhunter.domain.dto.ReqLoginDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
+import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +42,8 @@ public class AuthController {
                 this.userService = userService;
         }
 
-        @PostMapping("/login")
-        public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
+        @PostMapping("/auth/login")
+        public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDto) {
                 // B1: Đưa cho Security thông tin của người dùng nhập vào form login
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                                 loginDto.getUsername(), loginDto.getPassword());
@@ -50,8 +52,6 @@ public class AuthController {
                 Authentication authentication = authenticationManagerBuilder.getObject()
                                 .authenticate(authenticationToken);
 
-                // Tạo access token
-                String accessToken = securityUtil.createAccessToken(authentication);
                 // B3: Lưu các thông tin và SecurityContextHolder
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -65,6 +65,8 @@ public class AuthController {
                                         user.getEmail());
                         res.setUser(userLogin);
                 }
+                // Tạo access token
+                String accessToken = securityUtil.createAccessToken(authentication, res.getUser());
                 res.setAccessToken(accessToken);
 
                 // Tạo refresh token
@@ -84,5 +86,21 @@ public class AuthController {
                                 .ok()
                                 .header("Set-Cookie", responseCookie.toString())
                                 .body(res);
+        }
+
+        @GetMapping("/auth/account")
+        @ApiMessage("Fetch account")
+        public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
+                String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                                ? SecurityUtil.getCurrentUserLogin().get()
+                                : "";
+                ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+                User user = this.userService.findUserByEmail(email);
+                if (user != null) {
+                        userLogin.setId(user.getId());
+                        userLogin.setName(user.getName());
+                        userLogin.setEmail(user.getEmail());
+                }
+                return ResponseEntity.ok().body(userLogin);
         }
 }

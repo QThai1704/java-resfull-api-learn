@@ -25,7 +25,7 @@ public class JwtConfiguration {
     @Value("${hoidanit.jwt.base64-secret}")
     private String jwtToken;
 
-    // 
+    //
     private SecretKey getSecretKey() {
         byte[] keyBytes = Base64.from(jwtToken).decode();
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtil.JWT_ALGORITHM.getName());
@@ -52,12 +52,12 @@ public class JwtConfiguration {
         };
     }
 
-    // 
+    //
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("token");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("user");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);

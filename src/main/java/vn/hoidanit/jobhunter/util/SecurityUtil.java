@@ -38,7 +38,7 @@ public class SecurityUtil {
     private long jwtRefreshExpiration;
 
     // Tạo Access token
-    public String createAccessToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin userLogin) {
         Instant now = Instant.now();
         Instant validity = now.plus(jwtAccessExpiration, ChronoUnit.SECONDS);
 
@@ -47,12 +47,11 @@ public class SecurityUtil {
             .issuedAt(now)
             .expiresAt(validity)
             .subject(authentication.getName())
-            .claim("token", authentication)
+            .claim("user", userLogin)
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
-
     }
 
     // Tạo Refresh token
@@ -60,7 +59,7 @@ public class SecurityUtil {
         Instant now = Instant.now();
         Instant validity = now.plus(jwtRefreshExpiration, ChronoUnit.SECONDS);
 
-        // @formatter:off
+        // @formatter:off 
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
