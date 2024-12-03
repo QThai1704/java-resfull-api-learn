@@ -9,6 +9,9 @@ import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
+import vn.hoidanit.jobhunter.util.error.IdInvalidException;
+
+import org.springframework.http.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -17,10 +20,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -66,7 +72,7 @@ public class AuthController {
                         res.setUser(userLogin);
                 }
                 // Tạo access token
-                String accessToken = securityUtil.createAccessToken(authentication, res.getUser());
+                String accessToken = securityUtil.createAccessToken(authentication.getName(), res.getUser());
                 res.setAccessToken(accessToken);
 
                 // Tạo refresh token
@@ -84,7 +90,7 @@ public class AuthController {
 
                 return ResponseEntity
                                 .ok()
-                                .header("Set-Cookie", responseCookie.toString())
+                                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                                 .body(res);
         }
 
@@ -103,4 +109,82 @@ public class AuthController {
                 }
                 return ResponseEntity.ok().body(userLogin);
         }
+
+        @GetMapping("/auth/refresh")
+        @ApiMessage("Get user by refresh token")
+        public ResponseEntity<ResLoginDTO> getRefreshToken(
+                @CookieValue(name = "refreshToken", defaultValue = "abc") String refreshToken) throws IdInvalidException {
+                if(refreshToken.equals("abc")) {
+                        throw new IdInvalidException("Bạn không có token");
+                }
+                // Kiem tra token  
+                Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refreshToken);
+                String email = decodedToken.getSubject();
+
+                // Kiểm tra thông tin người dùng với refresh token + email
+                User currentUser = this.userService.getUserByRefreshTokenAndEmail(refreshToken, email);
+                if (currentUser == null) {
+                        throw new IdInvalidException("Token không hợp lệ");     
+                }
+
+                // Khởi tạo đối tượng ResLoginDTO
+                ResLoginDTO res = new ResLoginDTO();
+                User user = this.userService.findUserByEmail(email);
+                if (user != null) {
+                        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
+                                        user.getId(),
+                                        user.getName(),
+                                        user.getEmail());
+                        res.setUser(userLogin);
+                }
+
+                // Tạo access token
+                String accessToken = securityUtil.createAccessToken(email, res.getUser());
+                res.setAccessToken(accessToken);
+
+                // Tạo refresh token
+                String new_refresh_token = securityUtil.createRefreshToken(email, res);
+                this.userService.updateRefreshToken(email, refreshToken);
+
+                // Tạo cookie để lưu lại token
+                ResponseCookie responseCookie = ResponseCookie
+                                .from("refreshToken", new_refresh_token)
+                                .httpOnly(true)
+                                .secure(true) // chỉ có tác dụng cho http hoặc https, trong trường hợp này không có tác
+                                              // dụng
+                                .maxAge(jwtRefreshExpiration)
+                                .path("/")
+                                .build();
+
+                return ResponseEntity
+                                .ok()
+                                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                                .body(res);
+        }
+        
+        @PostMapping("/auth/logout")
+        public ResponseEntity<Void> postLogout() throws IdInvalidException {
+                String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                                ? SecurityUtil.getCurrentUserLogin().get()
+                                : "";
+                if(email.equals("")) {
+                        throw new IdInvalidException("Email không hợp lệ");
+                }
+
+                this.userService.updateRefreshToken(email, null);
+
+                // Xóa cookie
+                ResponseCookie deleteCookie = ResponseCookie
+                                .from("refreshToken", null)
+                                .httpOnly(true)
+                                .secure(true) // chỉ có tác dụng cho http hoặc https, trong trường hợp này không có tác
+                                              // dụng
+                                .maxAge(0)
+                                .path("/")
+                                .build();
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                        .body(null);
+        }
+        
 }

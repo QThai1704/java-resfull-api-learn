@@ -151,4 +151,8 @@ public class UserService {
         userDTO.setUpdateAt(getUser.getUpdateAt());
         return userDTO;
     }
+
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
 }
