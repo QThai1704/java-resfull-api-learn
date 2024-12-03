@@ -31,9 +31,11 @@ public class SecurityUtil {
     @Value("${hoidanit.jwt.base64-secret}")
     private String jwtToken;
 
+    // Thời gian sống của token
     @Value("${hoidanit.jwt.access-token-validity-in-seconds}")
     private long jwtAccessExpiration;
 
+    // Thời gian sống của refresh token
     @Value("${hoidanit.jwt.refresh-token-validity-in-seconds}")
     private long jwtRefreshExpiration;
 

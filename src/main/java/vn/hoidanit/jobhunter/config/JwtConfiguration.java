@@ -52,7 +52,7 @@ public class JwtConfiguration {
         };
     }
 
-    //
+    // Liên quan tới phân quyền
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
