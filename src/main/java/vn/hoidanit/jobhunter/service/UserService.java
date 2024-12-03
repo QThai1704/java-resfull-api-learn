@@ -12,11 +12,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.ResCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.Meta;
-import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.UserRepository;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
@@ -57,7 +56,7 @@ public class UserService {
                 .collect(Collectors.toList());
 
         ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
-        Meta meta = new Meta();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
 
         meta.setPage(pageable.getPageNumber() + 1);
         meta.setPageSize(pageable.getPageSize());
@@ -117,6 +116,12 @@ public class UserService {
 
     public ResCreateUserDTO convertToCreateUserDTO(User newUser) {
         ResCreateUserDTO userDTO = new ResCreateUserDTO();
+        ResCreateUserDTO.CompanyUser companyUser = new ResCreateUserDTO.CompanyUser();
+        if(companyUser != null) {
+            companyUser.setId(newUser.getCompany().getId());
+            companyUser.setName(newUser.getCompany().getName());
+            userDTO.setCompanyUser(companyUser);
+        }
         userDTO.setId(newUser.getId());
         userDTO.setName(newUser.getName());
         userDTO.setEmail(newUser.getEmail());
@@ -129,6 +134,12 @@ public class UserService {
 
     public ResUpdateUserDTO convertToUpdateUserDTO(User userUpdate) {
         ResUpdateUserDTO userDTO = new ResUpdateUserDTO();
+        ResUpdateUserDTO.CompanyUser companyUser = new ResUpdateUserDTO.CompanyUser();
+        if(companyUser != null) {
+            companyUser.setId(userUpdate.getCompany().getId());
+            companyUser.setName(userUpdate.getCompany().getName());
+            userDTO.setCompanyUser(companyUser);
+        }
         userDTO.setId(userUpdate.getId());
         userDTO.setName(userUpdate.getName());
         userDTO.setEmail(userUpdate.getEmail());

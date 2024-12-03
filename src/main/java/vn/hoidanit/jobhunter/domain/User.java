@@ -9,6 +9,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -42,6 +44,10 @@ public class User {
     private String createBy;
     private String updateBy;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+    
     public User(long id, String name, String email, String password) {
         this.id = id;
         this.name = name;
