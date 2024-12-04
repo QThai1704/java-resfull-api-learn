@@ -6,7 +6,10 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.Company;
-import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.company.ResCreateCompanyDTO;
+import vn.hoidanit.jobhunter.domain.response.company.ResFetchCompanyDTO;
+import vn.hoidanit.jobhunter.domain.response.company.ResUpdateCompanyDTO;
 import vn.hoidanit.jobhunter.service.CompanyService;
 import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 
@@ -34,32 +37,40 @@ public class CompanyController {
 
     // POST
     @PostMapping("/companies")
-    public ResponseEntity<Company> createCompany(@Valid @RequestBody Company postManCompany) {
+    @ApiMessage("Create new company")
+    public ResponseEntity<ResCreateCompanyDTO> createCompany(@Valid @RequestBody Company postManCompany) {
         Company newCompany = this.companyService.createCompany(postManCompany);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newCompany);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(this.companyService.convertToCreateCompanyDTO(newCompany));
     }
 
     // GET
     @GetMapping("/companies")
     @ApiMessage("Fetch all company")
-    public ResponseEntity<ResultPaginationDTO> getAllCompany(
+    public ResponseEntity<ResPaginationDTO> getAllCompany(
             @Filter Specification<Company> spec, Pageable pageable) {
         return ResponseEntity.ok(this.companyService.getAllCompany(spec, pageable));
     }
 
     @GetMapping("/company/{id}")
-    public ResponseEntity<Company> getCompanyById(@PathVariable("id") long id) {
-        return ResponseEntity.ok(this.companyService.getCompanyById(id));
+    @ApiMessage("Fetch company by id")
+    public ResponseEntity<ResFetchCompanyDTO> getCompanyById(@PathVariable("id") long id) {
+        Company company = this.companyService.getCompanyById(id);
+        return ResponseEntity.ok(this.companyService.convertToFetchCompanyDTO(company));
     }
 
     // PUT
     @PutMapping("/company/{id}")
-    public ResponseEntity<Company> updateCompany(@RequestBody Company company) {
-        return ResponseEntity.ok(this.companyService.updateCompany(company));
+    @ApiMessage("Update company")
+    public ResponseEntity<ResUpdateCompanyDTO> updateCompany(@RequestBody Company postManCompany) {
+        Company currentCompany = this.companyService.updateCompany(postManCompany);
+        return ResponseEntity.ok(this.companyService.convertToUpdateCompanyDTO(currentCompany));
     }
 
     // DELETE
     @DeleteMapping("/company/{id}")
+    @ApiMessage("Delete company")
     public ResponseEntity<Void> deleteCompany(@PathVariable("id") long id) {
         this.companyService.deleteCompany(id);
         return ResponseEntity.noContent().build();

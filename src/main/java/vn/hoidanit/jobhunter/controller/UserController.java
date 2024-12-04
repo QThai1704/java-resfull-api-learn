@@ -6,10 +6,10 @@ import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResFetchUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResUpdateUserDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
@@ -54,13 +54,13 @@ public class UserController {
     // GET
     @GetMapping("/users")
     @ApiMessage("Fetch all user")
-    public ResponseEntity<ResultPaginationDTO> fetchAllUser(@Filter Specification<User> spec, Pageable pageable) {
+    public ResponseEntity<ResPaginationDTO> fetchAllUser(@Filter Specification<User> spec, Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(spec, pageable));
     }
 
     @GetMapping("/users/{id}")
     @ApiMessage("Get user by id")
-    public ResponseEntity<ResUserDTO> fetchUserById(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResFetchUserDTO> fetchUserById(@PathVariable("id") long id) throws IdInvalidException {
         if (this.userService.existsById(id) != true) {
             throw new IdInvalidException("Id không tồn tại.");
         }

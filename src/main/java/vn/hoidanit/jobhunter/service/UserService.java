@@ -12,10 +12,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
-import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResCreateUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResFetchUserDTO;
+import vn.hoidanit.jobhunter.domain.response.user.ResUpdateUserDTO;
 import vn.hoidanit.jobhunter.repository.UserRepository;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
@@ -41,10 +41,13 @@ public class UserService {
         return null;
     }
 
-    public ResultPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
+    public ResPaginationDTO fetchAllUser(Specification<User> spec, Pageable pageable) {
+        // Find all record, return type Page
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
-        List<ResUserDTO> listUser = pageUser.getContent()
-                .stream().map(item -> new ResUserDTO(
+
+        // Convert every record to ResFetchUserDTO (use stream)
+        List<ResFetchUserDTO> listUser = pageUser.getContent()
+                .stream().map(item -> new ResFetchUserDTO(
                         item.getId(),
                         item.getEmail(),
                         item.getName(),
@@ -52,11 +55,15 @@ public class UserService {
                         item.getAddress(),
                         item.getAge(),
                         item.getCreateAt(),
-                        item.getUpdateAt()))
+                        item.getUpdateAt(),
+                        new ResFetchUserDTO.CompanyUser(
+                                item.getCompany().getId(),
+                                item.getCompany().getName()
+                        )))
                 .collect(Collectors.toList());
 
-        ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
-        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
+        ResPaginationDTO resultPaginationDTO = new ResPaginationDTO();
+        ResPaginationDTO.Meta meta = new ResPaginationDTO.Meta();
 
         meta.setPage(pageable.getPageNumber() + 1);
         meta.setPageSize(pageable.getPageSize());
@@ -70,9 +77,51 @@ public class UserService {
         return resultPaginationDTO;
     }
 
+    public ResFetchUserDTO convertToGetUserDTO(User getUser) {
+        ResFetchUserDTO userDTO = new ResFetchUserDTO();
+        ResFetchUserDTO.CompanyUser companyUser = new ResFetchUserDTO.CompanyUser();
+        if(companyUser != null) {
+            companyUser.setId(getUser.getCompany().getId());
+            companyUser.setName(getUser.getCompany().getName());
+            userDTO.setCompany(companyUser);
+        }
+        userDTO.setId(getUser.getId());
+        userDTO.setName(getUser.getName());
+        userDTO.setEmail(getUser.getEmail());
+        userDTO.setGender(getUser.getGender());
+        userDTO.setAddress(getUser.getAddress());
+        userDTO.setAge(getUser.getAge());
+        userDTO.setUpdateAt(getUser.getCreateAt());
+        userDTO.setUpdateAt(getUser.getUpdateAt());
+        return userDTO;
+    }
+
+    // Fetch user by token and email
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
     // POST
     public User save(User user) {
         return this.userRepository.save(user);
+    }
+
+    public ResCreateUserDTO convertToCreateUserDTO(User newUser) {
+        ResCreateUserDTO userDTO = new ResCreateUserDTO();
+        ResCreateUserDTO.CompanyUser companyUser = new ResCreateUserDTO.CompanyUser();
+        if(companyUser != null) {
+            companyUser.setId(newUser.getCompany().getId());
+            companyUser.setName(newUser.getCompany().getName());
+            userDTO.setCompany(companyUser);
+        }
+        userDTO.setId(newUser.getId());
+        userDTO.setName(newUser.getName());
+        userDTO.setEmail(newUser.getEmail());
+        userDTO.setGender(newUser.getGender());
+        userDTO.setAddress(newUser.getAddress());
+        userDTO.setAge(newUser.getAge());
+        userDTO.setCreateAt(Instant.now());
+        return userDTO;
     }
 
     // PUT
@@ -91,54 +140,13 @@ public class UserService {
         return currentUser;
     }
 
-    public User updateRefreshToken(String email, String refreshToken) {
-        User user = this.findUserByEmail(email);
-        if (user == null) {
-            return null;
-        }
-        user.setRefreshToken(refreshToken);
-        return this.userRepository.save(user);
-    }
-
-    // DELETE
-    public void delete(long id) throws IdInvalidException {
-        this.userRepository.deleteById(id);
-    }
-
-    // Process Function
-    public boolean existsByEmail(String email) {
-        return this.userRepository.existsByEmail(email);
-    }
-
-    public boolean existsById(long id) {
-        return this.userRepository.existsById(id);
-    }
-
-    public ResCreateUserDTO convertToCreateUserDTO(User newUser) {
-        ResCreateUserDTO userDTO = new ResCreateUserDTO();
-        ResCreateUserDTO.CompanyUser companyUser = new ResCreateUserDTO.CompanyUser();
-        if(companyUser != null) {
-            companyUser.setId(newUser.getCompany().getId());
-            companyUser.setName(newUser.getCompany().getName());
-            userDTO.setCompanyUser(companyUser);
-        }
-        userDTO.setId(newUser.getId());
-        userDTO.setName(newUser.getName());
-        userDTO.setEmail(newUser.getEmail());
-        userDTO.setGender(newUser.getGender());
-        userDTO.setAddress(newUser.getAddress());
-        userDTO.setAge(newUser.getAge());
-        userDTO.setCreateAt(Instant.now());
-        return userDTO;
-    }
-
     public ResUpdateUserDTO convertToUpdateUserDTO(User userUpdate) {
         ResUpdateUserDTO userDTO = new ResUpdateUserDTO();
         ResUpdateUserDTO.CompanyUser companyUser = new ResUpdateUserDTO.CompanyUser();
         if(companyUser != null) {
             companyUser.setId(userUpdate.getCompany().getId());
             companyUser.setName(userUpdate.getCompany().getName());
-            userDTO.setCompanyUser(companyUser);
+            userDTO.setCompany(companyUser);
         }
         userDTO.setId(userUpdate.getId());
         userDTO.setName(userUpdate.getName());
@@ -150,20 +158,27 @@ public class UserService {
         return userDTO;
     }
 
-    public ResUserDTO convertToGetUserDTO(User getUser) {
-        ResUserDTO userDTO = new ResUserDTO();
-        userDTO.setId(getUser.getId());
-        userDTO.setName(getUser.getName());
-        userDTO.setEmail(getUser.getEmail());
-        userDTO.setGender(getUser.getGender());
-        userDTO.setAddress(getUser.getAddress());
-        userDTO.setAge(getUser.getAge());
-        userDTO.setUpdateAt(getUser.getCreateAt());
-        userDTO.setUpdateAt(getUser.getUpdateAt());
-        return userDTO;
+    // DELETE
+    public void delete(long id) throws IdInvalidException {
+        this.userRepository.deleteById(id);
     }
 
-    public User getUserByRefreshTokenAndEmail(String token, String email) {
-        return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    // Check exists
+    public boolean existsByEmail(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    public boolean existsById(long id) {
+        return this.userRepository.existsById(id);
+    }
+    
+    // Update refresh token
+    public User updateRefreshToken(String email, String refreshToken) {
+        User user = this.findUserByEmail(email);
+        if (user == null) {
+            return null;
+        }
+        user.setRefreshToken(refreshToken);
+        return this.userRepository.save(user);
     }
 }

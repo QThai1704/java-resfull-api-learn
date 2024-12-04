@@ -18,7 +18,7 @@ import vn.hoidanit.jobhunter.util.SecurityUtil;
 import java.time.Instant;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Table(name = "companies")
 @Getter
@@ -50,6 +50,7 @@ public class Company {
     private String updatedBy;
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<User> users;
     
     @PrePersist

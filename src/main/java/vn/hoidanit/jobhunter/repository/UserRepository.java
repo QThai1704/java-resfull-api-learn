@@ -1,5 +1,6 @@
 package vn.hoidanit.jobhunter.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long>,
     boolean existsById(long id);
 
     User findByRefreshTokenAndEmail(String token, String email);
+
+    List<User> findAllUserByCompanyId(long id);
 }
