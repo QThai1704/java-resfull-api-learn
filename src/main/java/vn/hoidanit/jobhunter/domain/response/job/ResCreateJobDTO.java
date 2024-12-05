@@ -1,15 +1,14 @@
 package vn.hoidanit.jobhunter.domain.response.job;
 
 import java.time.Instant;
+import java.util.List;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import vn.hoidanit.jobhunter.domain.Skill;
 import vn.hoidanit.jobhunter.util.constant.LevelEnum;
 
 @Getter
@@ -27,7 +26,7 @@ public class ResCreateJobDTO {
     Instant startDate;
     Instant endDate;
     boolean active;
-    SkillJob skill;
+    List<SkillJob> skill;
 
     @Getter
     @Setter

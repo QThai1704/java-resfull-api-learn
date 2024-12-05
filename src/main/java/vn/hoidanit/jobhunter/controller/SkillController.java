@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.hoidanit.jobhunter.domain.Skill;
 import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResCreateSkillDTO;
-import vn.hoidanit.jobhunter.domain.response.skill.ResFetchSkillDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResUpdateSkillDTO;
 import vn.hoidanit.jobhunter.service.SkillService;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
@@ -18,7 +17,6 @@ import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -54,5 +52,6 @@ public class SkillController {
         Skill currentSkill = this.skillService.updateSkill(skillPostman);
         return ResponseEntity.ok().body(this.skillService.convertToUpdateSkillDTO(currentSkill));
     }
+    
     // DELETE
 }

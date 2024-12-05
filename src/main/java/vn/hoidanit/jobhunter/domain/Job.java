@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import vn.hoidanit.jobhunter.domain.response.job.ResCreateJobDTO.SkillJob;
 import vn.hoidanit.jobhunter.util.constant.LevelEnum;
 
 @Getter
@@ -65,6 +66,7 @@ public class Job {
         joinColumns = @JoinColumn(name = "job_id"),
         inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
+    
     List<Skill> skills;
 
     @PrePersist
@@ -77,5 +79,10 @@ public class Job {
     public void handlerBeforeUpdate() {
         this.updatedAt = Instant.now();
         this.updatedBy = "admin";
+    }
+
+    public Iterable<SkillJob> stream() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'stream'");
     }
 }
