@@ -3,7 +3,6 @@ package vn.hoidanit.jobhunter.domain;
 import java.time.Instant;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -16,7 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -37,7 +35,8 @@ import vn.hoidanit.jobhunter.util.constant.LevelEnum;
 @Entity
 @Table(name = "jobs")
 public class Job {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     String name;
     String location;
@@ -60,13 +59,9 @@ public class Job {
     Company company;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"jobs"})
-    @JoinTable(
-        name = "job_skill",
-        joinColumns = @JoinColumn(name = "job_id"),
-        inverseJoinColumns = @JoinColumn(name = "skill_id")
-    )
-    
+    @JsonIgnoreProperties(value = { "jobs" })
+    @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+
     List<Skill> skills;
 
     @PrePersist
