@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.user.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.user.ResFetchUserDTO;
 import vn.hoidanit.jobhunter.domain.response.user.ResUpdateUserDTO;

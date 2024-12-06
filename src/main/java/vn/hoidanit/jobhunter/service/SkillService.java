@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.Skill;
-import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResCreateSkillDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResFetchSkillDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResUpdateSkillDTO;

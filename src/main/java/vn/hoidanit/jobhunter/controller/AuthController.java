@@ -119,14 +119,14 @@ public class AuthController {
                 if(refreshToken.equals("abc")) {
                         throw new IdInvalidException("Bạn không có token");
                 }
-                // Kiem tra token  
+                // Kiem tra token
                 Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refreshToken);
                 String email = decodedToken.getSubject();
 
                 // Kiểm tra thông tin người dùng với refresh token + email
                 User currentUser = this.userService.getUserByRefreshTokenAndEmail(refreshToken, email);
                 if (currentUser == null) {
-                        throw new IdInvalidException("Token không hợp lệ");     
+                        throw new IdInvalidException("Token không hợp lệ");
                 }
 
                 // Khởi tạo đối tượng ResLoginDTO
@@ -163,7 +163,7 @@ public class AuthController {
                                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                                 .body(res);
         }
-        
+
         @PostMapping("/auth/logout")
         public ResponseEntity<Void> postLogout() throws IdInvalidException {
                 String email = SecurityUtil.getCurrentUserLogin().isPresent()
@@ -188,5 +188,5 @@ public class AuthController {
                         .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
                         .body(null);
         }
-        
+
 }

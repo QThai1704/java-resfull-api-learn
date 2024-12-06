@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.hoidanit.jobhunter.domain.Skill;
-import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResCreateSkillDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResUpdateSkillDTO;
 import vn.hoidanit.jobhunter.service.SkillService;
@@ -44,7 +44,6 @@ public class SkillController {
     public ResponseEntity<ResPaginationDTO> fetchAllSkill(Pageable pageable) {
         return ResponseEntity.ok().body(this.skillService.getAllSkill(pageable));
     }
-    
 
     // UPDATE
     @PutMapping("/skill/{id}")
@@ -52,6 +51,5 @@ public class SkillController {
         Skill currentSkill = this.skillService.updateSkill(skillPostman);
         return ResponseEntity.ok().body(this.skillService.convertToUpdateSkillDTO(currentSkill));
     }
-    
     // DELETE
 }

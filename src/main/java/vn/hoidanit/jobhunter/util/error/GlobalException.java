@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import vn.hoidanit.jobhunter.domain.response.RestResponse;
+import vn.hoidanit.jobhunter.domain.response.other.RestResponse;
 
 // Chú ý:  @RestControllerAdvice = @ControllerAdvice + @ResponseBody
 @RestControllerAdvice

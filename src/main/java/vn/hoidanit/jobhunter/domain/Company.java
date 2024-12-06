@@ -52,7 +52,7 @@ public class Company {
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<User> users;
-    
+
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Job> jobs;

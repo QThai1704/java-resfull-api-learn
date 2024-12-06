@@ -10,10 +10,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.response.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.company.ResCreateCompanyDTO;
 import vn.hoidanit.jobhunter.domain.response.company.ResFetchCompanyDTO;
 import vn.hoidanit.jobhunter.domain.response.company.ResUpdateCompanyDTO;
+import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.repository.CompanyRepository;
 import vn.hoidanit.jobhunter.repository.UserRepository;
 
