@@ -52,6 +52,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     List<Resume> resumes;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+
     public User(long id, String name, String email, String password) {
         this.id = id;
         this.name = name;

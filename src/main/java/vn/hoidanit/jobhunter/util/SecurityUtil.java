@@ -46,7 +46,12 @@ public class SecurityUtil {
     private long jwtRefreshExpiration;
 
     // Tạo Access token
-    public String createAccessToken(String email, ResLoginDTO.UserLogin userLogin) {
+    public String createAccessToken(String email, ResLoginDTO userLogin) {
+        ResLoginDTO.UserInsideToken userInsideToken = new ResLoginDTO.UserInsideToken();
+        userInsideToken.setId(userLogin.getUser().getId());
+        userInsideToken.setName(userLogin.getUser().getName());
+        userInsideToken.setEmail(userLogin.getUser().getEmail());
+
         Instant now = Instant.now();
         Instant validity = now.plus(jwtAccessExpiration, ChronoUnit.SECONDS);
 
@@ -64,10 +69,15 @@ public class SecurityUtil {
 
     // Tạo Refresh token
     public String createRefreshToken(String email, ResLoginDTO user) {
+        ResLoginDTO.UserInsideToken userInsideToken = new ResLoginDTO.UserInsideToken();
+        userInsideToken.setId(user.getUser().getId());
+        userInsideToken.setName(user.getUser().getName());
+        userInsideToken.setEmail(user.getUser().getEmail());
+
         Instant now = Instant.now();
         Instant validity = now.plus(jwtRefreshExpiration, ChronoUnit.SECONDS);
 
-        // @formatter:off 
+        // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)

@@ -32,7 +32,14 @@ public class PermissionController {
     // Create
     @PostMapping("/permission")
     public ResponseEntity<ResCreatePermissionDTO> createPermission(
-       @Valid @RequestBody Permission permission) {
+       @Valid @RequestBody Permission permission) throws IdInvalidException {
+        if(permissionService.checkById(permission.getId())){
+            throw new IdInvalidException("Id đã tồn tại");
+        }else{
+            if(permissionService.checkByApiPathAndMethodAndModule(permission)){
+                throw new IdInvalidException("ApiPath hoặc Method hoặc Module đã tồn tại");
+            }
+        }
         Permission newPermission = this.permissionService.createPermission(permission);
         ResCreatePermissionDTO resCreatePermissionDTO = this.permissionService.convertToCreatePermissionDTO(newPermission);
         return ResponseEntity.ok().body(resCreatePermissionDTO);
@@ -64,12 +71,12 @@ public class PermissionController {
     }
 
     // Delete
-    @DeleteMapping("/permission/{id}")
-    public ResponseEntity<Void> deletePermission(@PathVariable("id") Long id) throws IdInvalidException {
-        if(id == null){
-            throw new IdInvalidException("Id không tồn tại");
-        }
-        this.permissionService.deletePermission(id);
-        return ResponseEntity.notFound().build();
-    }
+    // @DeleteMapping("/permission/{id}")
+    // public ResponseEntity<Void> deletePermission(@PathVariable("id") Long id) throws IdInvalidException {
+    //     if(id == null){
+    //         throw new IdInvalidException("Id không tồn tại");
+    //     }
+    //     this.permissionService.deletePermission(id);
+    //     return ResponseEntity.notFound().build();
+    // }
 }

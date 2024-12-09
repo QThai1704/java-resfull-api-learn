@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.user.ResCreateUserDTO;
@@ -21,9 +21,13 @@ import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoleService roleService;
 
+    public UserService(UserRepository userRepository, RoleService roleService) {
+        this.userRepository = userRepository;
+        this.roleService = roleService;
+    }
     // GET
     public User fetchUserById(long id) {
         Optional<User> user = this.userRepository.findById(id);
@@ -47,19 +51,7 @@ public class UserService {
 
         // Convert every record to ResFetchUserDTO (use stream)
         List<ResFetchUserDTO> listUser = pageUser.getContent()
-                .stream().map(item -> new ResFetchUserDTO(
-                        item.getId(),
-                        item.getEmail(),
-                        item.getName(),
-                        item.getGender(),
-                        item.getAddress(),
-                        item.getAge(),
-                        item.getCreateAt(),
-                        item.getUpdateAt(),
-                        new ResFetchUserDTO.CompanyUser(
-                                item.getCompany().getId(),
-                                item.getCompany().getName()
-                        )))
+                .stream().map(item -> convertToGetUserDTO(item))
                 .collect(Collectors.toList());
 
         ResPaginationDTO resultPaginationDTO = new ResPaginationDTO();
@@ -103,6 +95,10 @@ public class UserService {
 
     // POST
     public User save(User user) {
+        if(user.getRole() != null) {
+            Role role = this.roleService.getRoleById(user.getRole().getId());
+            user.setRole(role);
+        }
         return this.userRepository.save(user);
     }
 
@@ -114,6 +110,7 @@ public class UserService {
             companyUser.setName(newUser.getCompany().getName());
             userDTO.setCompany(companyUser);
         }
+
         userDTO.setId(newUser.getId());
         userDTO.setName(newUser.getName());
         userDTO.setEmail(newUser.getEmail());
@@ -148,6 +145,12 @@ public class UserService {
             companyUser.setName(userUpdate.getCompany().getName());
             userDTO.setCompany(companyUser);
         }
+        ResUpdateUserDTO.RoleUser roleUser = new ResUpdateUserDTO.RoleUser();
+        if(roleUser != null) {
+            roleUser.setId(userUpdate.getRole().getId());
+            roleUser.setName(userUpdate.getRole().getName());
+            userDTO.setRole(roleUser);
+        }
         userDTO.setId(userUpdate.getId());
         userDTO.setName(userUpdate.getName());
         userDTO.setEmail(userUpdate.getEmail());
@@ -171,7 +174,7 @@ public class UserService {
     public boolean existsById(long id) {
         return this.userRepository.existsById(id);
     }
-    
+
     // Update refresh token
     public User updateRefreshToken(String email, String refreshToken) {
         User user = this.findUserByEmail(email);

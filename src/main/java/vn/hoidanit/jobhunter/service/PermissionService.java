@@ -115,8 +115,15 @@ public class PermissionService {
         this.permissionRepository.deleteById(id);
     }
 
-    public Optional<Role> findById(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    // Check exists
+    public boolean checkById(Long id) {
+        return this.permissionRepository.existsById(id);
+    }
+
+    public boolean checkByApiPathAndMethodAndModule(Permission permission) {
+        return this.permissionRepository.existsByApiPathAndMethodAndModule(
+            permission.getApiPath(),
+            permission.getMethod(),
+            permission.getModule());
     }
 }

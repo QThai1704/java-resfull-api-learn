@@ -68,11 +68,12 @@ public class AuthController {
                         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                                         user.getId(),
                                         user.getName(),
-                                        user.getEmail());
+                                        user.getEmail(),
+                                        user.getRole());
                         res.setUser(userLogin);
                 }
                 // Tạo access token
-                String accessToken = securityUtil.createAccessToken(authentication.getName(), res.getUser());
+                String accessToken = securityUtil.createAccessToken(authentication.getName(), res);
                 res.setAccessToken(accessToken);
 
                 // Tạo refresh token
@@ -107,6 +108,7 @@ public class AuthController {
                         userLogin.setId(user.getId());
                         userLogin.setName(user.getName());
                         userLogin.setEmail(user.getEmail());
+                        userLogin.setRole(user.getRole());
                         userGetAccount.setUser(userLogin);
                 }
                 return ResponseEntity.ok().body(userGetAccount);
@@ -136,12 +138,13 @@ public class AuthController {
                         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                                         user.getId(),
                                         user.getName(),
-                                        user.getEmail());
+                                        user.getEmail(),
+                                        user.getRole());
                         res.setUser(userLogin);
                 }
 
                 // Tạo access token
-                String accessToken = securityUtil.createAccessToken(email, res.getUser());
+                String accessToken = securityUtil.createAccessToken(email, res);
                 res.setAccessToken(accessToken);
 
                 // Tạo refresh token

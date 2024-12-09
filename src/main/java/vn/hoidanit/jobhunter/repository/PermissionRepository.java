@@ -8,5 +8,6 @@ import vn.hoidanit.jobhunter.domain.Permission;
 
 @Repository
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
-
+    boolean existsById(Long id);
+    boolean existsByApiPathAndMethodAndModule(String apiPath, String method, String module);
 }

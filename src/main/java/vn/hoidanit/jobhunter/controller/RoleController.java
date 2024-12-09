@@ -8,6 +8,7 @@ import vn.hoidanit.jobhunter.domain.response.role.ResCreateRoleDTO;
 import vn.hoidanit.jobhunter.domain.response.role.ResFetchRoleDTO;
 import vn.hoidanit.jobhunter.domain.response.role.ResUpdateRoleDTO;
 import vn.hoidanit.jobhunter.service.RoleService;
+import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,10 @@ public class RoleController {
 
     // Create
     @PostMapping("/role")
-    public ResponseEntity<ResCreateRoleDTO> createRole(@RequestBody Role role) {
+    public ResponseEntity<ResCreateRoleDTO> createRole(@RequestBody Role role) throws IdInvalidException {
+        // if(this.roleService.existsByName(role.getName())) {
+        //     throw new IdInvalidException("Name đã tồn tại");
+        // }
         Role newRole = this.roleService.createRole(role);
         ResCreateRoleDTO resCreateRoleDTO = this.roleService.convertToCreateRoleDTO(newRole);
         return ResponseEntity.ok().body(resCreateRoleDTO);

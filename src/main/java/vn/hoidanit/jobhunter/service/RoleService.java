@@ -154,4 +154,9 @@ public class RoleService {
     public void deleteRole(Long id) {
         roleRepository.deleteById(id);
     }
+
+    // Check exists
+    public boolean existsByName(String name) {
+        return roleRepository.existsByName(name);
+    }
 }
