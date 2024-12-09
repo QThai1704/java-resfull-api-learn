@@ -3,6 +3,8 @@ package vn.hoidanit.jobhunter.domain;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -45,6 +47,7 @@ public class Permission {
     String updatedBy;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
+    @JsonIgnore
     List<Role> roles;
 
     @PrePersist

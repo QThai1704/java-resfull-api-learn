@@ -2,6 +2,8 @@ package vn.hoidanit.jobhunter.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.crypto.SecretKey;
@@ -55,12 +57,17 @@ public class SecurityUtil {
         Instant now = Instant.now();
         Instant validity = now.plus(jwtAccessExpiration, ChronoUnit.SECONDS);
 
+        // hardcode permission (for testing)
+        List<String> listAuthority = new ArrayList<String>();
+        listAuthority.add("ROLE_USER_CREATE");
+        listAuthority.add("ROLE_USER_UPDATE");
         // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
             .subject(email)
-            .claim("user", userLogin)
+            .claim("user", userInsideToken)
+            .claim("permission", listAuthority)
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
@@ -69,20 +76,20 @@ public class SecurityUtil {
 
     // Tạo Refresh token
     public String createRefreshToken(String email, ResLoginDTO user) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(jwtRefreshExpiration, ChronoUnit.SECONDS);
+        
         ResLoginDTO.UserInsideToken userInsideToken = new ResLoginDTO.UserInsideToken();
         userInsideToken.setId(user.getUser().getId());
         userInsideToken.setName(user.getUser().getName());
         userInsideToken.setEmail(user.getUser().getEmail());
-
-        Instant now = Instant.now();
-        Instant validity = now.plus(jwtRefreshExpiration, ChronoUnit.SECONDS);
 
         // @formatter:off
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
             .subject(email)
-            .claim("user", user.getUser())
+            .claim("user", userInsideToken)
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();

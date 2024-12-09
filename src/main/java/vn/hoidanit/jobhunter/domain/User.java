@@ -3,6 +3,8 @@ package vn.hoidanit.jobhunter.domain;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -55,7 +57,6 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
-
 
     public User(long id, String name, String email, String password) {
         this.id = id;

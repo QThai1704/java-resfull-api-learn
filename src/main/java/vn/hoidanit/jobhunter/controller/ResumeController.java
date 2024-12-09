@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
 @RestController
 @RequestMapping("/api/v1")
 public class ResumeController {
@@ -69,5 +66,11 @@ public class ResumeController {
     public ResponseEntity<Void> deleteResume(Long id) {
         this.resumeService.deleteResume(id);
         return ResponseEntity.ok().body(null);
+    }
+
+    @PostMapping("/resumes/by-user")
+    @ApiMessage("Get list resumes by user")
+    public ResponseEntity<ResPaginationDTO> fetchResumeByUser(Pageable pageable) {
+        return ResponseEntity.ok().body(this.resumeService.fetchResumeByUser(pageable));
     }
 }

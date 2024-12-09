@@ -4,9 +4,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import com.turkraft.springfilter.builder.FilterBuilder;
+import com.turkraft.springfilter.converter.FilterSpecification;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import com.turkraft.springfilter.parser.FilterParser;
+import com.turkraft.springfilter.parser.node.FilterNode;
 
 import vn.hoidanit.jobhunter.domain.Job;
 import vn.hoidanit.jobhunter.domain.Resume;
@@ -18,15 +25,25 @@ import vn.hoidanit.jobhunter.domain.response.resume.ResUpdateResumeDTO;
 import vn.hoidanit.jobhunter.repository.JobRepository;
 import vn.hoidanit.jobhunter.repository.ResumeRepository;
 import vn.hoidanit.jobhunter.repository.UserRepository;
+import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 @Service
 public class ResumeService {
+    @Autowired
+    FilterBuilder fb;
+
+    @Autowired
+    private FilterParser filterParser;
+
+    @Autowired
+    private FilterSpecificationConverter filterSpecificationConverter;
+
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
 
     public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository,
-                        JobRepository jobRepository) {
+            JobRepository jobRepository) {
         this.resumeRepository = resumeRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
@@ -92,7 +109,7 @@ public class ResumeService {
         Page<Resume> resumePage = this.resumeRepository.findAll(pageable);
         List<Resume> resumeList = resumePage.getContent();
         List<ResFetchResumeDTO> listResume = resumeList.stream()
-                .map( item -> new ResFetchResumeDTO(
+                .map(item -> new ResFetchResumeDTO(
                         item.getEmail(),
                         item.getUrl(),
                         item.getStatus(),
@@ -101,12 +118,11 @@ public class ResumeService {
                         item.getUpdatedAt(),
                         item.getCreateBy(),
                         new ResFetchResumeDTO.UserResume(
-                            item.getUser().getName(),
-                            item.getUser().getEmail()),
+                                item.getUser().getName(),
+                                item.getUser().getEmail()),
                         new ResFetchResumeDTO.JobResume(
-                            item.getJob().getName(),
-                            item.getJob().getDescription())
-                    ))
+                                item.getJob().getName(),
+                                item.getJob().getDescription())))
                 .collect(Collectors.toList());
         ResPaginationDTO resPaginationDTO = new ResPaginationDTO();
         ResPaginationDTO.Meta meta = new ResPaginationDTO.Meta();
@@ -150,5 +166,37 @@ public class ResumeService {
     // DELETE
     public void deleteResume(Long id) {
         this.resumeRepository.deleteById(id);
+    }
+
+    public ResPaginationDTO fetchResumeByUser(Pageable pageable) {
+        // query builder
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        // ***
+        FilterNode node = filterParser.parse("email='" + email + "'");
+        FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
+        
+        Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
+
+        ResPaginationDTO rs = new ResPaginationDTO();
+        ResPaginationDTO.Meta mt = new ResPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+
+        mt.setPages(pageResume.getTotalPages());
+        mt.setTotal(pageResume.getTotalElements());
+
+        rs.setMeta(mt);
+
+        // remove sensitive data
+        List<ResFetchResumeDTO> listResume = pageResume.getContent()
+                .stream().map(item -> this.convertToFetchResumeDTO(item))
+                .collect(Collectors.toList());
+
+        rs.setResult(listResume);
+
+        return rs;
     }
 }

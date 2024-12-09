@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.Permission;
-import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.permission.ResCreatePermissionDTO;
 import vn.hoidanit.jobhunter.domain.response.permission.ResFetchPermissionDTO;
@@ -39,6 +38,7 @@ public class PermissionService {
         resCreatePermissionDTO.setCreatedBy(permission.getCreatedBy());
         return resCreatePermissionDTO;
     }
+
     // Get
     public Permission getPermissionById(Long id) {
         Optional<Permission> permission = permissionRepository.findById(id);
@@ -66,8 +66,7 @@ public class PermissionService {
         List<Permission> listPermission = pagePermission.getContent();
         List<ResFetchPermissionDTO> listFetchPermissionDTO = listPermission
                 .stream()
-                .map(permission ->
-                    new ResFetchPermissionDTO(
+                .map(permission -> new ResFetchPermissionDTO(
                         permission.getName(),
                         permission.getApiPath(),
                         permission.getMethod(),
@@ -75,8 +74,7 @@ public class PermissionService {
                         permission.getCreatedAt(),
                         permission.getCreatedBy(),
                         permission.getUpdatedAt(),
-                        permission.getUpdatedBy()
-                    ))
+                        permission.getUpdatedBy()))
                 .collect(Collectors.toList());
         ResPaginationDTO resPaginationDTO = new ResPaginationDTO();
         ResPaginationDTO.Meta meta = new ResPaginationDTO.Meta();
@@ -110,6 +108,7 @@ public class PermissionService {
         resUpdatePermissionDTO.setUpdatedBy(permission.getUpdatedBy());
         return resUpdatePermissionDTO;
     }
+
     // Delete
     public void deletePermission(Long id) {
         this.permissionRepository.deleteById(id);
@@ -122,8 +121,8 @@ public class PermissionService {
 
     public boolean checkByApiPathAndMethodAndModule(Permission permission) {
         return this.permissionRepository.existsByApiPathAndMethodAndModule(
-            permission.getApiPath(),
-            permission.getMethod(),
-            permission.getModule());
+                permission.getApiPath(),
+                permission.getMethod(),
+                permission.getModule());
     }
 }

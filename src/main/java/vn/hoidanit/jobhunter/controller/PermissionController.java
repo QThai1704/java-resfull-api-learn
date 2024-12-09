@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -32,23 +31,25 @@ public class PermissionController {
     // Create
     @PostMapping("/permission")
     public ResponseEntity<ResCreatePermissionDTO> createPermission(
-       @Valid @RequestBody Permission permission) throws IdInvalidException {
-        if(permissionService.checkById(permission.getId())){
+            @Valid @RequestBody Permission permission) throws IdInvalidException {
+        if (permissionService.checkById(permission.getId())) {
             throw new IdInvalidException("Id đã tồn tại");
-        }else{
-            if(permissionService.checkByApiPathAndMethodAndModule(permission)){
+        } else {
+            if (permissionService.checkByApiPathAndMethodAndModule(permission)) {
                 throw new IdInvalidException("ApiPath hoặc Method hoặc Module đã tồn tại");
             }
         }
         Permission newPermission = this.permissionService.createPermission(permission);
-        ResCreatePermissionDTO resCreatePermissionDTO = this.permissionService.convertToCreatePermissionDTO(newPermission);
+        ResCreatePermissionDTO resCreatePermissionDTO = this.permissionService
+                .convertToCreatePermissionDTO(newPermission);
         return ResponseEntity.ok().body(resCreatePermissionDTO);
     }
 
     // Get
     @GetMapping("/permission/{id}")
-    public ResponseEntity<ResFetchPermissionDTO> getPermissionById(@PathVariable("id") Long id) throws IdInvalidException {
-        if(id == null){
+    public ResponseEntity<ResFetchPermissionDTO> getPermissionById(@PathVariable("id") Long id)
+            throws IdInvalidException {
+        if (id == null) {
             throw new IdInvalidException("Id không tồn tại");
         }
         Permission permission = this.permissionService.getPermissionById(id);
@@ -66,17 +67,19 @@ public class PermissionController {
     @PutMapping("/permission/{id}")
     public ResponseEntity<ResCreatePermissionDTO> putMethodName(@RequestBody Permission permission) {
         Permission currentPermission = this.permissionService.updatePermission(permission);
-        ResCreatePermissionDTO resCreatePermissionDTO = this.permissionService.convertToCreatePermissionDTO(currentPermission);
+        ResCreatePermissionDTO resCreatePermissionDTO = this.permissionService
+                .convertToCreatePermissionDTO(currentPermission);
         return ResponseEntity.ok().body(resCreatePermissionDTO);
     }
 
     // Delete
     // @DeleteMapping("/permission/{id}")
-    // public ResponseEntity<Void> deletePermission(@PathVariable("id") Long id) throws IdInvalidException {
-    //     if(id == null){
-    //         throw new IdInvalidException("Id không tồn tại");
-    //     }
-    //     this.permissionService.deletePermission(id);
-    //     return ResponseEntity.notFound().build();
+    // public ResponseEntity<Void> deletePermission(@PathVariable("id") Long id)
+    // throws IdInvalidException {
+    // if(id == null){
+    // throw new IdInvalidException("Id không tồn tại");
+    // }
+    // this.permissionService.deletePermission(id);
+    // return ResponseEntity.notFound().build();
     // }
 }
