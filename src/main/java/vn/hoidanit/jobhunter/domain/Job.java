@@ -3,10 +3,13 @@ package vn.hoidanit.jobhunter.domain;
 import java.time.Instant;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -43,8 +46,8 @@ public class Job {
     String location;
     double salary;
     int quantity;
+    @Enumerated(EnumType.STRING)
     LevelEnum level;
-
     @Column(columnDefinition = "MEDIUMTEXT")
     String description;
     Instant startDate;
@@ -66,7 +69,8 @@ public class Job {
     )
     List<Skill> skills;
 
-    @OneToMany(mappedBy = "job")
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<Resume> resumes;
 
     @PrePersist

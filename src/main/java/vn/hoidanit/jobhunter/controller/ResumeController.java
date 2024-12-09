@@ -8,8 +8,10 @@ import vn.hoidanit.jobhunter.domain.response.resume.ResCreateResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.resume.ResFetchResumeDTO;
 import vn.hoidanit.jobhunter.domain.response.resume.ResUpdateResumeDTO;
 import vn.hoidanit.jobhunter.service.ResumeService;
+import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,10 +34,11 @@ public class ResumeController {
 
     // Create
     @PostMapping("/resume")
+    @ApiMessage("Create resume")
     public ResponseEntity<ResCreateResumeDTO> createResume(@RequestBody Resume resume) {
         Resume newResume = this.resumeService.createResume(resume);
         ResCreateResumeDTO resCreateResumeDTO = this.resumeService.convertToCreateResumeDTO(newResume);
-        return ResponseEntity.ok().body(resCreateResumeDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resCreateResumeDTO);
     }
 
     // Get

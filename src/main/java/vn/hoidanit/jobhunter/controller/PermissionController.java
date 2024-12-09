@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.Permission;
 import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.permission.ResCreatePermissionDTO;
@@ -9,7 +10,6 @@ import vn.hoidanit.jobhunter.domain.response.permission.ResFetchPermissionDTO;
 import vn.hoidanit.jobhunter.service.PermissionService;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
-import org.hibernate.query.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-
-
-
 
 @RestController
 @RequestMapping("/api/v1")
@@ -35,7 +31,8 @@ public class PermissionController {
 
     // Create
     @PostMapping("/permission")
-    public ResponseEntity<ResCreatePermissionDTO> createPermission(@RequestBody Permission permission) {
+    public ResponseEntity<ResCreatePermissionDTO> createPermission(
+       @Valid @RequestBody Permission permission) {
         Permission newPermission = this.permissionService.createPermission(permission);
         ResCreatePermissionDTO resCreatePermissionDTO = this.permissionService.convertToCreatePermissionDTO(newPermission);
         return ResponseEntity.ok().body(resCreatePermissionDTO);

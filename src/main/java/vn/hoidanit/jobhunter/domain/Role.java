@@ -31,7 +31,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "roles")
-@JsonIgnoreProperties(value = { "permissions" })
+@JsonIgnoreProperties(value = { "roles" })
 public class Role {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
@@ -44,7 +44,7 @@ public class Role {
     String updatedBy;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name = "role_permission",
+        name = "permission_role",
         joinColumns = @JoinColumn(name = "role_id"),
         inverseJoinColumns = @JoinColumn(name = "permission_id")
     )

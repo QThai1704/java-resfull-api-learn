@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +30,14 @@ import lombok.experimental.FieldDefaults;
 public class Permission {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
+
+    @NotBlank(message = "Name không được trống!")
     String name;
+    @NotBlank(message = "API path không được trống!")
     String apiPath;
+    @NotBlank(message = "Method không được trống!")
     String method;
+    @NotBlank(message = "Module không được trống!")
     String module;
     Instant createdAt;
     Instant updatedAt;

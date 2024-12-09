@@ -18,7 +18,7 @@ import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 @Service
 public class SkillService {
-    
+
     private final SkillRepository skillRepository;
 
     public SkillService(SkillRepository skillRepository) {

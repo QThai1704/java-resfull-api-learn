@@ -1,6 +1,5 @@
 package vn.hoidanit.jobhunter.service;
 
-import java.lang.StackWalker.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.Permission;
-import vn.hoidanit.jobhunter.domain.response.company.ResUpdateCompanyDTO;
+import vn.hoidanit.jobhunter.domain.Role;
 import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.permission.ResCreatePermissionDTO;
 import vn.hoidanit.jobhunter.domain.response.permission.ResFetchPermissionDTO;
@@ -114,5 +113,10 @@ public class PermissionService {
     // Delete
     public void deletePermission(Long id) {
         this.permissionRepository.deleteById(id);
+    }
+
+    public Optional<Role> findById(long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 }
