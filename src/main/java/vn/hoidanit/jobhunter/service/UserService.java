@@ -28,6 +28,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.roleService = roleService;
     }
+
     // GET
     public User fetchUserById(long id) {
         Optional<User> user = this.userRepository.findById(id);
@@ -72,7 +73,15 @@ public class UserService {
     public ResFetchUserDTO convertToGetUserDTO(User getUser) {
         ResFetchUserDTO userDTO = new ResFetchUserDTO();
         ResFetchUserDTO.CompanyUser companyUser = new ResFetchUserDTO.CompanyUser();
-        if(companyUser != null) {
+        ResFetchUserDTO.RoleUser roleUser = new ResFetchUserDTO.RoleUser();
+
+        if (userDTO.getRole() != null) {
+            roleUser.setId(getUser.getRole().getId());
+            roleUser.setName(getUser.getRole().getName());
+            userDTO.setRole(roleUser);
+        }
+
+        if(userDTO.getCompany() != null) {
             companyUser.setId(getUser.getCompany().getId());
             companyUser.setName(getUser.getCompany().getName());
             userDTO.setCompany(companyUser);
@@ -83,8 +92,8 @@ public class UserService {
         userDTO.setGender(getUser.getGender());
         userDTO.setAddress(getUser.getAddress());
         userDTO.setAge(getUser.getAge());
-        userDTO.setUpdateAt(getUser.getCreateAt());
-        userDTO.setUpdateAt(getUser.getUpdateAt());
+        userDTO.setCreatedAt(getUser.getCreatedAt());
+        userDTO.setUpdatedAt(getUser.getUpdatedAt());
         return userDTO;
     }
 
@@ -117,7 +126,7 @@ public class UserService {
         userDTO.setGender(newUser.getGender());
         userDTO.setAddress(newUser.getAddress());
         userDTO.setAge(newUser.getAge());
-        userDTO.setCreateAt(Instant.now());
+        userDTO.setCreatedAt(Instant.now());
         return userDTO;
     }
 
@@ -157,7 +166,7 @@ public class UserService {
         userDTO.setGender(userUpdate.getGender());
         userDTO.setAddress(userUpdate.getAddress());
         userDTO.setAge(userUpdate.getAge());
-        userDTO.setUpdateAt(Instant.now());
+        userDTO.setUpdatedAt(Instant.now());
         return userDTO;
     }
 

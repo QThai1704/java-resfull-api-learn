@@ -31,7 +31,7 @@ public class RoleController {
     }
 
     // Create
-    @PostMapping("/role")
+    @PostMapping("/roles")
     public ResponseEntity<ResCreateRoleDTO> createRole(@RequestBody Role role) throws IdInvalidException {
         // if(this.roleService.existsByName(role.getName())) {
         //     throw new IdInvalidException("Name đã tồn tại");
@@ -42,7 +42,7 @@ public class RoleController {
     }
 
     // Get
-    @GetMapping("/role/{id}")
+    @GetMapping("/roles/{id}")
     public ResponseEntity<ResFetchRoleDTO> getRoleById(@RequestBody Role role) {
         Role findRole = this.roleService.getRoleById(role.getId());
         ResFetchRoleDTO resFetchRoleDTO = this.roleService.convertToFetchRoleDTO(findRole);
@@ -56,7 +56,7 @@ public class RoleController {
     }
 
     // Update
-    @PutMapping("/role/{id}")
+    @PutMapping("/roles")
     public ResponseEntity<ResUpdateRoleDTO> updateRole(@RequestBody Role role) {
         Role currentRole = this.roleService.updateRole(role);
         ResUpdateRoleDTO resUpdateRoleDTO = this.roleService.convertToUpdateRoleDTO(currentRole);
@@ -64,7 +64,7 @@ public class RoleController {
     }
 
     // Delete
-    @DeleteMapping("/role/{id}")
+    @DeleteMapping("/roles/{id}")
     public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
         this.roleService.deleteRole(id);
         return ResponseEntity.ok().body(null);

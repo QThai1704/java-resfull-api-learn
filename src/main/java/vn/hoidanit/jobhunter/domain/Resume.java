@@ -40,8 +40,8 @@ public class Resume {
     StatusEnum status;
     Instant createdAt;
     Instant updatedAt;
-    String createBy;
-    String updateBy;
+    String createdBy;
+    String updatedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -54,12 +54,12 @@ public class Resume {
     @PrePersist
     public void prePersist() {
         createdAt = Instant.now();
-        createBy = "system";
+        createdBy = "system";
     }
 
     @PreUpdate
     public void preUpdate() {
         updatedAt = Instant.now();
-        updateBy = "system";
+        updatedBy = "system";
     }
 }

@@ -29,7 +29,7 @@ public class PermissionController {
     }
 
     // Create
-    @PostMapping("/permission")
+    @PostMapping("/permissions")
     public ResponseEntity<ResCreatePermissionDTO> createPermission(
             @Valid @RequestBody Permission permission) throws IdInvalidException {
         if (permissionService.checkById(permission.getId())) {
@@ -46,7 +46,7 @@ public class PermissionController {
     }
 
     // Get
-    @GetMapping("/permission/{id}")
+    @GetMapping("/permissions/{id}")
     public ResponseEntity<ResFetchPermissionDTO> getPermissionById(@PathVariable("id") Long id)
             throws IdInvalidException {
         if (id == null) {
@@ -64,7 +64,7 @@ public class PermissionController {
     }
 
     // Update
-    @PutMapping("/permission/{id}")
+    @PutMapping("/permissions")
     public ResponseEntity<ResCreatePermissionDTO> putMethodName(@RequestBody Permission permission) {
         Permission currentPermission = this.permissionService.updatePermission(permission);
         ResCreatePermissionDTO resCreatePermissionDTO = this.permissionService

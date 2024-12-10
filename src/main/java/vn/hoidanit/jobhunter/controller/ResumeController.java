@@ -30,7 +30,7 @@ public class ResumeController {
     }
 
     // Create
-    @PostMapping("/resume")
+    @PostMapping("/resumes")
     @ApiMessage("Create resume")
     public ResponseEntity<ResCreateResumeDTO> createResume(@RequestBody Resume resume) {
         Resume newResume = this.resumeService.createResume(resume);
@@ -39,7 +39,7 @@ public class ResumeController {
     }
 
     // Get
-    @GetMapping("/resume/{id}")
+    @GetMapping("/resumes/{id}")
     public ResponseEntity<ResFetchResumeDTO> getResumById(@RequestBody Resume resume) {
         Resume fetchResume = this.resumeService.getResumeById(resume.getId());
         ResFetchResumeDTO resFetchResumeDTO = this.resumeService.convertToFetchResumeDTO(fetchResume);
@@ -54,7 +54,7 @@ public class ResumeController {
     }
 
     // Update
-    @PutMapping("/resume/{id}")
+    @PutMapping("/resumes")
     public ResponseEntity<ResUpdateResumeDTO> updateResume(@RequestBody Resume resume) {
         Resume currentResume = this.resumeService.updateResume(resume);
         ResUpdateResumeDTO resUpdateResumeDTO = this.resumeService.convertToUpdateResumeDTO(currentResume);
@@ -62,7 +62,7 @@ public class ResumeController {
     }
 
     // Delete
-    @DeleteMapping("/resume/{id}")
+    @DeleteMapping("/resumes/{id}")
     public ResponseEntity<Void> deleteResume(Long id) {
         this.resumeService.deleteResume(id);
         return ResponseEntity.ok().body(null);

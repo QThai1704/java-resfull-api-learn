@@ -53,7 +53,7 @@ public class CompanyController {
         return ResponseEntity.ok(this.companyService.getAllCompany(spec, pageable));
     }
 
-    @GetMapping("/company/{id}")
+    @GetMapping("/companies/{id}")
     @ApiMessage("Fetch company by id")
     public ResponseEntity<ResFetchCompanyDTO> getCompanyById(@PathVariable("id") long id) {
         Company company = this.companyService.getCompanyById(id);
@@ -61,7 +61,7 @@ public class CompanyController {
     }
 
     // PUT
-    @PutMapping("/company/{id}")
+    @PutMapping("/companies")
     @ApiMessage("Update company")
     public ResponseEntity<ResUpdateCompanyDTO> updateCompany(@RequestBody Company postManCompany) {
         Company currentCompany = this.companyService.updateCompany(postManCompany);
@@ -69,10 +69,10 @@ public class CompanyController {
     }
 
     // DELETE
-    @DeleteMapping("/company/{id}")
+    @DeleteMapping("/companies/{id}")
     @ApiMessage("Delete company")
     public ResponseEntity<Void> deleteCompany(@PathVariable("id") long id) {
         this.companyService.deleteCompany(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(null);
     }
 }

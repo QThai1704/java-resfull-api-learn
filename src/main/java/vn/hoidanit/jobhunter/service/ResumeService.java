@@ -70,7 +70,7 @@ public class ResumeService {
         resCreateResumeDTO.setUser(userResume);
         resCreateResumeDTO.setJob(jobResume);
         resCreateResumeDTO.setCreatedAt(resume.getCreatedAt());
-        resCreateResumeDTO.setCreateBy(resume.getCreateBy());
+        resCreateResumeDTO.setCreatedBy(resume.getCreatedBy());
         return resCreateResumeDTO;
     }
 
@@ -99,9 +99,9 @@ public class ResumeService {
         resFetchResumeDTO.setUser(userResume);
         resFetchResumeDTO.setJob(jobResume);
         resFetchResumeDTO.setCreatedAt(resume.getCreatedAt());
-        resFetchResumeDTO.setCreatedBy(resume.getCreateBy());
+        resFetchResumeDTO.setCreatedBy(resume.getCreatedBy());
         resFetchResumeDTO.setUpdatedAt(resume.getUpdatedAt());
-        resFetchResumeDTO.setUpdatedBy(resume.getCreateBy());
+        resFetchResumeDTO.setUpdatedBy(resume.getCreatedBy());
         return resFetchResumeDTO;
     }
 
@@ -114,9 +114,9 @@ public class ResumeService {
                         item.getUrl(),
                         item.getStatus(),
                         item.getCreatedAt(),
-                        item.getCreateBy(),
+                        item.getCreatedBy(),
                         item.getUpdatedAt(),
-                        item.getCreateBy(),
+                        item.getCreatedBy(),
                         new ResFetchResumeDTO.UserResume(
                                 item.getUser().getName(),
                                 item.getUser().getEmail()),
@@ -159,7 +159,7 @@ public class ResumeService {
         resUpdateResumeDTO.setUser(userResume);
         resUpdateResumeDTO.setJob(jobResume);
         resUpdateResumeDTO.setUpdatedAt(resume.getUpdatedAt());
-        resUpdateResumeDTO.setUpdatedBy(resume.getCreateBy());
+        resUpdateResumeDTO.setUpdatedBy(resume.getCreatedBy());
         return resUpdateResumeDTO;
     }
 
@@ -176,7 +176,7 @@ public class ResumeService {
         // ***
         FilterNode node = filterParser.parse("email='" + email + "'");
         FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
-        
+
         Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
 
         ResPaginationDTO rs = new ResPaginationDTO();

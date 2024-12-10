@@ -12,6 +12,7 @@ import vn.hoidanit.jobhunter.domain.response.other.ResPaginationDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResCreateSkillDTO;
 import vn.hoidanit.jobhunter.domain.response.skill.ResUpdateSkillDTO;
 import vn.hoidanit.jobhunter.service.SkillService;
+import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,7 +31,8 @@ public class SkillController {
     }
 
     // CREATE
-    @PostMapping("/skill")
+    @PostMapping("/skills")
+    @ApiMessage("Create new skill")
     public ResponseEntity<ResCreateSkillDTO> createSkill(@RequestBody Skill skill) {
         if(this.skillService.existsByName(skill.getName())) {
             throw new RuntimeException("Kỹ năng " + skill.getName() + " đã tồn tại");
@@ -41,12 +43,14 @@ public class SkillController {
 
     // FETCH
     @GetMapping("/skills")
+    @ApiMessage("Fetch all skill")
     public ResponseEntity<ResPaginationDTO> fetchAllSkill(Pageable pageable) {
         return ResponseEntity.ok().body(this.skillService.getAllSkill(pageable));
     }
 
     // UPDATE
-    @PutMapping("/skill/{id}")
+    @PutMapping("/skills")
+    @ApiMessage("Update skill")
     public ResponseEntity<ResUpdateSkillDTO> updateSkill(@PathVariable String id, @RequestBody Skill skillPostman) throws IdInvalidException {
         Skill currentSkill = this.skillService.updateSkill(skillPostman);
         return ResponseEntity.ok().body(this.skillService.convertToUpdateSkillDTO(currentSkill));

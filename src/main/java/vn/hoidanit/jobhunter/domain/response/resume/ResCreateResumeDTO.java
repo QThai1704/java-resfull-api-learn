@@ -22,7 +22,7 @@ public class ResCreateResumeDTO {
     String url;
     StatusEnum status;
     Instant createdAt;
-    String createBy;
+    String createdBy;
     UserResume user;
     JobResume job;
 

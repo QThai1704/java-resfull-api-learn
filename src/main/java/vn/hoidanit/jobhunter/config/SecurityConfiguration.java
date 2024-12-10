@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,6 +34,9 @@ public class SecurityConfiguration {
                                 .authorizeHttpRequests(
                                                 authz -> authz
                                                                 .requestMatchers(whiteList).permitAll()
+                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/companies").permitAll()
+                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/jobs").permitAll()
+                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/skills").permitAll()
                                                                 .anyRequest().authenticated())
                                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                                                 .authenticationEntryPoint(customAuthenticationEntryPoint))

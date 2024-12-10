@@ -58,7 +58,6 @@ public class CompanyService {
                         item.getCreatedAt(),
                         item.getUpdatedAt()
                 )).collect(Collectors.toList());
-        
         ResPaginationDTO resultPaginationDTO = new ResPaginationDTO();
         ResPaginationDTO.Meta meta = new ResPaginationDTO.Meta();
         meta.setPage(pageable.getPageNumber() + 1);

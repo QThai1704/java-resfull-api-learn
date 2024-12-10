@@ -61,4 +61,14 @@ public class Permission {
         this.updatedAt = Instant.now();
         this.updatedBy = "admin";
     }
+
+    public Permission(@NotBlank(message = "Name không được trống!") String name,
+            @NotBlank(message = "API path không được trống!") String apiPath,
+            @NotBlank(message = "Method không được trống!") String method,
+            @NotBlank(message = "Module không được trống!") String module) {
+        this.name = name;
+        this.apiPath = apiPath;
+        this.method = method;
+        this.module = module;
+    }
 }

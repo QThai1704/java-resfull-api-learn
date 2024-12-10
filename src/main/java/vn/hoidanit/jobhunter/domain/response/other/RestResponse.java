@@ -3,8 +3,8 @@ package vn.hoidanit.jobhunter.domain.response.other;
 public class RestResponse<T> {
     private String error;
     private Object message;
-    private T data;
     private int statusCode;
+    private T data;
 
     public String getError() {
         return error;

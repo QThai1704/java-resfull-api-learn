@@ -55,6 +55,14 @@ public class SkillService {
         return resultPaginationDTO;
     }
 
+    public Skill fetchSkillById(Long id) throws IdInvalidException {
+        Optional<Skill> skillOptional = this.skillRepository.findById(id);
+        if(skillOptional.isPresent()) {
+            return skillOptional.get();
+        }
+        return null;
+    }
+
     // UPDATE
     public Skill updateSkill(Skill skill) throws IdInvalidException {
         Optional<Skill> skillOptional = this.skillRepository.findById(skill.getId());

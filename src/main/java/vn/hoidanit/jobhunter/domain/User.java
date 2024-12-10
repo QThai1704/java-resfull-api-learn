@@ -3,7 +3,7 @@ package vn.hoidanit.jobhunter.domain;
 import java.time.Instant;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,13 +42,14 @@ public class User {
     private String address;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
-    private Instant createAt;
-    private Instant updateAt;
-    private String createBy;
-    private String updateBy;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
+    @JsonIgnore
     private Company company;
 
     @OneToMany(mappedBy = "user")
@@ -70,14 +71,14 @@ public class User {
 
     @PrePersist
     public void handlerBeforeCreate() {
-        this.createBy = "admin";
-        this.createAt = Instant.now();
+        this.createdBy = "admin";
+        this.createdAt = Instant.now();
     }
 
     @PreUpdate
     public void handlerBeforeUpdate() {
-        this.updateBy = "admin";
-        this.updateAt = Instant.now();
+        this.updatedBy = "admin";
+        this.updatedAt = Instant.now();
     }
 
 }

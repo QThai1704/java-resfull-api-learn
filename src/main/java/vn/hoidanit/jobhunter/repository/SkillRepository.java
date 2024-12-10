@@ -8,4 +8,4 @@ import vn.hoidanit.jobhunter.domain.Skill;
 public interface SkillRepository extends JpaRepository<Skill, Long> {
     boolean existsByName(String name);
     boolean existsById(Long id);
-} 
+}

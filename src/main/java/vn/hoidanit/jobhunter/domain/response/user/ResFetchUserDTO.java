@@ -19,15 +19,25 @@ public class ResFetchUserDTO {
     private GenderEnum gender;
     private String address;
     private int age;
-    private Instant createAt;
-    private Instant updateAt;
+    private Instant createdAt;
+    private Instant updatedAt;
     private CompanyUser company;
-    
+    private RoleUser role;
+
     @Setter
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CompanyUser {
+        private long id;
+        private String name;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RoleUser {
         private long id;
         private String name;
     }

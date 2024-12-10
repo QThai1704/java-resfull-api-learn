@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -103,7 +104,7 @@ public class JobService {
         return resFetchJobDTO;
     }
 
-    public ResPaginationDTO convertToFetchAllJobDTO(Pageable pageable){
+    public ResPaginationDTO convertToFetchAllJobDTO(Specification<Job> spec, Pageable pageable){
         Page<Job> jobPage = this.jobRepository.findAll(pageable);
         List<ResFetchJobDTO> jobList = jobPage.getContent()
                 .stream()
