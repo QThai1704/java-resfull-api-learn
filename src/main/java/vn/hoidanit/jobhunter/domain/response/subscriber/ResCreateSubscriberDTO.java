@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import vn.hoidanit.jobhunter.domain.Skill;
 
 @Getter
 @Setter
