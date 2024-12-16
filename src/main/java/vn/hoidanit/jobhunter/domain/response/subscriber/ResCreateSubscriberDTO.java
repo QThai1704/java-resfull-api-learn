@@ -19,7 +19,6 @@ public class ResCreateSubscriberDTO {
     String email;
     List<SkillSubscriber> skills;
 
-
     @Getter
     @Setter
     public static class SkillSubscriber {
