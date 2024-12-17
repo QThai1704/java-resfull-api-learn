@@ -20,6 +20,15 @@ import vn.hoidanit.jobhunter.domain.response.other.RestResponse;
 // Chú ý:  @RestControllerAdvice = @ControllerAdvice + @ResponseBody
 @RestControllerAdvice
 public class GlobalException {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<RestResponse<Object>> handleAllException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        res.setMessage(ex.getMessage());
+        res.setError("Internal Server Error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+    }
+
     @ExceptionHandler(value = {
             IdInvalidException.class,
             BadCredentialsException.class,
@@ -28,8 +37,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleIdException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setMessage("Call API failed");
-        res.setError(ex.getMessage());
+        res.setMessage(ex.getMessage());
+        res.setError("Call API failed");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
@@ -52,8 +61,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleUrlException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setMessage("Không tìm thấy đường dẫn");
-        res.setError(ex.getMessage());
+        res.setMessage(ex.getMessage());
+        res.setError("Không tìm thấy đường dẫn");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
@@ -64,8 +73,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleUploadFileException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setMessage("Upload file failed");
-        res.setError(ex.getMessage());
+        res.setMessage(ex.getMessage());
+        res.setError("Upload file failed");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
@@ -74,8 +83,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handlePermissionException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.FORBIDDEN.value());
-        res.setMessage("Forbidden");
-        res.setError(ex.getMessage());
+        res.setMessage(ex.getMessage());
+        res.setError("Forbidden");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
     }
 }

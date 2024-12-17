@@ -24,9 +24,12 @@ public class SecurityConfiguration {
         public SecurityFilterChain filterChain(HttpSecurity http,
                         CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
                 String[] whiteList = {
-                                "/", "/api/v1/auth/refresh", "/api/v1/auth/login", "/storage/**",
-                                "/api/v1/auth/register", "api/v1/emails",
-                                "/api/v1/auth/companies/**", "/api/v1/auth/jobs/**", "/api/v1/auth/skills/**", "/api/v1/files/**"
+                                "/", "/api/v1/auth/**", "/storage/**", "api/v1/emails",
+                                "/api/v1/companies/**", "/api/v1/auth/jobs/**", "/api/v1/auth/skills/**", "/api/v1/files/**",
+                                "/api/v1/subcribers/**", "/api/v1/auth/resumes/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
                 };
                 http
                                 .csrf(c -> c.disable())
@@ -34,9 +37,9 @@ public class SecurityConfiguration {
                                 .authorizeHttpRequests(
                                                 authz -> authz
                                                                 .requestMatchers(whiteList).permitAll()
-                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/companies").permitAll()
-                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/jobs").permitAll()
-                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/skills").permitAll()
+                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/companies/**").permitAll()
+                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/jobs/**").permitAll()
+                                                                .requestMatchers(HttpMethod.GET, "/api/v1/auth/skills/**").permitAll()
                                                                 .anyRequest().authenticated())
                                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                                                 .authenticationEntryPoint(customAuthenticationEntryPoint))

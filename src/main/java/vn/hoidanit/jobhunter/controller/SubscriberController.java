@@ -9,6 +9,8 @@ import vn.hoidanit.jobhunter.domain.Subscriber;
 import vn.hoidanit.jobhunter.domain.response.subscriber.ResCreateSubscriberDTO;
 import vn.hoidanit.jobhunter.domain.response.subscriber.ResUpdateSubscriberDTO;
 import vn.hoidanit.jobhunter.service.SubscriberService;
+import vn.hoidanit.jobhunter.util.SecurityUtil;
+import vn.hoidanit.jobhunter.util.anotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,5 +54,15 @@ public class SubscriberController {
     public ResponseEntity<Void> deleteSubscriber(@PathVariable long id) {
         this.subscriberService.deleteSubscriber(id);
         return ResponseEntity.ok().body(null);
+    }
+
+    @PostMapping("/subscribers/skills")
+    @ApiMessage("Get subscriber's skill")
+    public ResponseEntity<Subscriber> getSubscribersSkill() throws IdInvalidException {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
+        return ResponseEntity.ok().body(this.subscriberService.findByEmail(email));
     }
 }
